@@ -63,6 +63,8 @@
 				font-size: 16px;
 				transition: background-color 0.3s ease, transform 0.2s ease;
 				transform: translateY(0);
+				justify-content: center;
+				flex-direction: column;
 			}
 
 			button:hover {
@@ -87,7 +89,7 @@
 				padding-bottom: 10px;
 			}
 			#top {
-				position: absolute;
+				position: relative; /* Change from absolute to relative */
 				top: 5px;
 				left: 50%;
 				transform: translateX(-50%);
