@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Signature Capture App</title>
+		<!-- favicon -->
+		<link
+			rel="shortcut icon"
+			href="https://plugins.whatsonchain.com/api/plugin/main/00bcf9c020efbdd18ce2c5c0494e41badcfd539df8edb0833a5a2c7601c74407"
+			type="image/x-icon"
+		/>
+		<!-- <link rel="stylesheet" href="styles.css" /> -->
+		<!-- twitter card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@signaturechain" />
+		<meta name="twitter:creator" content="@signaturechain" />
+		<meta name="twitter:title" content="Signature Chain" />
+		<meta
+			name="twitter:description"
+			content="A simple signature capture app that uses the blockchain to store signatures."
+		/>
+		<!-- <meta name="twitter:image" content="signaturechain.org/logo.png" /> -->
+		<style>
+			body {
+				font-family: "Arial", sans-serif;
+				background-color: #1a1f29; /* deep background color for contrast */
+				display: flex;
+				align-items: center;
+				height: 100vh;
+				margin: 0;
+				color: #e0e0e0; /* light color for text contrast against dark background */
+				justify-content: space-between;
+				padding: 20px 0; /* This ensures there's some spacing at the top and bottom */
+			}
+
+			.signature-pad {
+				border-radius: 10px;
+				padding: 20px;
+				position: relative;
+				width: 520px;
+				background-color: #2a2f3d; /* slightly lighter than background to create layers */
+				border: 1px solid #3a3f4d; /* subtle border for definition */
+			}
+
+			canvas {
+				border-radius: 10px;
+				display: block;
+				background-color: #e0e0e0; /* light canvas on which signatures are visible */
+				border: 1px solid #c0c0c0; /* light border for canvas */
+			}
+
+			button {
+				border: none;
+				border-radius: 20px;
+				padding: 10px 20px;
+				margin: 10px 5px;
+				background-color: #3a3f4d; /* button color consistent with theme */
+				color: #e0e0e0; /* text color for buttons */
+				box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+				cursor: pointer;
+				outline: none;
+				font-size: 16px;
+				transition: background-color 0.3s ease, transform 0.2s ease;
+				transform: translateY(0);
+			}
+
+			button:hover {
+				background-color: #4a4f5d; /* slightly lighter on hover */
+			}
+
+			button:active {
+				background-color: #5a5f6d; /* even lighter on active */
+				transform: translateY(2px); /* subtle button press effect */
+				box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+			}
+
+			/* Adding a header for the application name */
+			.signature-pad::before {
+				content: "Signature Chain";
+				font-weight: bold;
+				font-size: 24px;
+				display: block;
+				margin-bottom: 20px;
+				text-align: center;
+				border-bottom: 2px dashed #4a4f5d; /* dashed line to reflect the chain concept subtly */
+				padding-bottom: 10px;
+			}
+			#top {
+				position: absolute;
+				top: 5px;
+				left: 50%;
+				transform: translateX(-50%);
+				width: 500px;
+			}
+			.container {
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+			#logo {
+				width: 500px;
+			}
+			/* @ */
+			@media (max-width: 600px) {
+				.signature-pad {
+					width: 100%;
+					padding: 10px;
+				}
+				#logo {
+					width: 300px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container" id="top">
+			<img
+				src="https://plugins.whatsonchain.com/api/plugin/main/30b2d116ea708cbc55310670f116fefa342650e1ff2619e1dba40017960ed3eb"
+				alt=""
+				id="logo"
+			/>
+			<h3>Signature Chain, Blockchain Based Signature Tool</h3>
+		</div>
+		<div class="signature-pad">
+			<canvas id="signatureCanvas" width="500" height="200"></canvas>
+			<button id="clearButton">Clear</button>
+			<button id="saveButton">Save</button>
+		</div>
+		<footer>&copy; 2023 Smartledger Solutions</footer>
+		<!-- <script src="script.js"></script> -->
+		<script>
+			const canvas = document.getElementById("signatureCanvas");
+			const ctx = canvas.getContext("2d");
+			let isDrawing = false;
+
+			canvas.addEventListener("mousedown", () => {
+				isDrawing = true;
+			});
+
+			canvas.addEventListener("mouseup", () => {
+				isDrawing = false;
+				ctx.beginPath();
+			});
+
+			canvas.addEventListener("mousemove", draw);
+
+			function draw(event) {
+				if (!isDrawing) return;
+				ctx.lineWidth = 2;
+				ctx.lineCap = "round";
+				ctx.strokeStyle = "black";
+
+				ctx.lineTo(
+					event.clientX - canvas.offsetLeft,
+					event.clientY - canvas.offsetTop
+				);
+				ctx.stroke();
+				ctx.beginPath();
+				ctx.moveTo(
+					event.clientX - canvas.offsetLeft,
+					event.clientY - canvas.offsetTop
+				);
+			}
+
+			document.getElementById("clearButton").addEventListener("click", () => {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+			});
+
+			document.getElementById("saveButton").addEventListener("click", () => {
+				const dataURL = canvas.toDataURL("image/png");
+				const downloadLink = document.createElement("a");
+				downloadLink.href = dataURL;
+				downloadLink.download = "signature.png";
+				document.body.appendChild(downloadLink);
+				downloadLink.click();
+				document.body.removeChild(downloadLink);
+			});
+		</script>
+	</body>
+</html>
