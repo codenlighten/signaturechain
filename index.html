@@ -147,7 +147,7 @@
 			<h3>Signature Chain, Blockchain Based Signature Tool</h3>
 		</div>
 		<div class="signature-pad">
-			<canvas id="signatureCanvas" width="500" height="200"></canvas>
+			<canvas id="signatureCanvas"></canvas>
 			<button id="clearButton">Clear</button>
 			<button id="saveButton">Save</button>
 		</div>
@@ -158,48 +158,79 @@
 			const ctx = canvas.getContext("2d");
 			let isDrawing = false;
 
-			canvas.addEventListener("mousedown", () => {
+			// Function to get position
+			function getEventPosition(event) {
+				if (event.touches) {
+					return {
+						x: event.touches[0].clientX,
+						y: event.touches[0].clientY,
+					};
+				} else {
+					return {
+						x: event.clientX,
+						y: event.clientY,
+					};
+				}
+			}
+
+			function startDrawing(event) {
+				const position = getEventPosition(event);
 				isDrawing = true;
-			});
-
-			canvas.addEventListener("mouseup", () => {
-				isDrawing = false;
-				ctx.beginPath();
-			});
-
-			canvas.addEventListener("mousemove", draw);
+				ctx.moveTo(
+					position.x - canvas.offsetLeft,
+					position.y - canvas.offsetTop
+				);
+			}
 
 			function draw(event) {
 				if (!isDrawing) return;
-				ctx.lineWidth = 2;
-				ctx.lineCap = "round";
-				ctx.strokeStyle = "black";
-
+				const position = getEventPosition(event);
 				ctx.lineTo(
-					event.clientX - canvas.offsetLeft,
-					event.clientY - canvas.offsetTop
+					position.x - canvas.offsetLeft,
+					position.y - canvas.offsetTop
 				);
 				ctx.stroke();
 				ctx.beginPath();
 				ctx.moveTo(
-					event.clientX - canvas.offsetLeft,
-					event.clientY - canvas.offsetTop
+					position.x - canvas.offsetLeft,
+					position.y - canvas.offsetTop
 				);
 			}
 
-			document.getElementById("clearButton").addEventListener("click", () => {
-				ctx.clearRect(0, 0, canvas.width, canvas.height);
+			function stopDrawing() {
+				isDrawing = false;
+				ctx.beginPath();
+			}
+
+			canvas.addEventListener("mousedown", startDrawing);
+			canvas.addEventListener("mouseup", stopDrawing);
+			canvas.addEventListener("mousemove", draw);
+			canvas.addEventListener("mouseleave", stopDrawing); // Added to handle case where user leaves the canvas
+
+			// For touch devices
+			canvas.addEventListener("touchstart", (e) => {
+				e.preventDefault();
+				startDrawing(e);
 			});
 
-			document.getElementById("saveButton").addEventListener("click", () => {
-				const dataURL = canvas.toDataURL("image/png");
-				const downloadLink = document.createElement("a");
-				downloadLink.href = dataURL;
-				downloadLink.download = "signature.png";
-				document.body.appendChild(downloadLink);
-				downloadLink.click();
-				document.body.removeChild(downloadLink);
+			canvas.addEventListener("touchmove", (e) => {
+				e.preventDefault();
+				draw(e);
 			});
+
+			canvas.addEventListener("touchend", stopDrawing);
+
+			// Adjust canvas size based on its display size and devicePixelRatio
+			function resizeCanvas() {
+				const rect = canvas.getBoundingClientRect();
+				canvas.width = rect.width * window.devicePixelRatio;
+				canvas.height = (rect.width / 2.5) * window.devicePixelRatio; // Maintain a specific aspect ratio
+				ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+			}
+
+			resizeCanvas();
+			// Consider debouncing this or using a more efficient method if performance becomes an issue.
+			window.addEventListener("resize", resizeCanvas);
 		</script>
 	</body>
 </html>
