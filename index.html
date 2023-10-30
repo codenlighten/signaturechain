@@ -4,121 +4,143 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Signature Capture App</title>
-		<!-- favicon -->
 		<link
 			rel="shortcut icon"
 			href="https://plugins.whatsonchain.com/api/plugin/main/00bcf9c020efbdd18ce2c5c0494e41badcfd539df8edb0833a5a2c7601c74407"
 			type="image/x-icon"
 		/>
-		<!-- <link rel="stylesheet" href="styles.css" /> -->
-		<!-- twitter card -->
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:site" content="@signaturechain" />
-		<meta name="twitter:creator" content="@signaturechain" />
-		<meta name="twitter:title" content="Signature Chain" />
-		<meta
-			name="twitter:description"
-			content="A simple signature capture app that uses the blockchain to store signatures."
+		<link
+			href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+			rel="stylesheet"
 		/>
-		<!-- <meta name="twitter:image" content="signaturechain.org/logo.png" /> -->
 		<style>
-			body {
-				font-family: "Arial", sans-serif;
-				background-color: #1a1f29; /* deep background color for contrast */
-				display: flex;
-				align-items: center;
-				height: 100vh;
+			/* General Reset */
+			* {
 				margin: 0;
-				color: #e0e0e0; /* light color for text contrast against dark background */
-				justify-content: space-between;
-				padding: 20px 0; /* This ensures there's some spacing at the top and bottom */
+				padding: 0;
+				box-sizing: border-box;
+				font-family: "Poppins", sans-serif;
+			}
+
+			body {
+				background: linear-gradient(45deg, #83a4d4, #b6fbff);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				min-height: 100vh;
+			}
+
+			.container {
+				text-align: center;
+			}
+
+			.header {
+				margin-bottom: 50px;
+				/* background-color: #2980b9; */
+				padding: 20px;
+				/* border-radius: 15px;
+				box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); */
+			}
+
+			#logo {
+				width: 500px;
+				/* margin-bottom: 20px; */
+				transition: transform 0.3s;
+			}
+
+			#logo:hover {
+				transform: scale(1.1);
+			}
+
+			h3 {
+				color: #333;
+				margin-bottom: 25px;
+				font-weight: 500;
 			}
 
 			.signature-pad {
-				border-radius: 10px;
-				padding: 20px;
-				position: relative;
-				width: 520px;
-				background-color: #2a2f3d; /* slightly lighter than background to create layers */
-				border: 1px solid #3a3f4d; /* subtle border for definition */
+				background-color: #ffffff;
+				padding: 30px;
+				border-radius: 15px;
+				box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+				text-align: center;
+				width: 80%;
+				max-width: 600px;
 			}
 
-			canvas {
+			#signatureCanvas {
+				border: 2px solid #d1d1d1;
 				border-radius: 10px;
+				cursor: crosshair;
 				display: block;
-				background-color: #e0e0e0; /* light canvas on which signatures are visible */
-				border: 1px solid #c0c0c0; /* light border for canvas */
+				margin: 0 auto 20px;
 			}
 
 			button {
+				background-color: #3498db;
+				color: #ffffff;
+				padding: 12px 25px;
 				border: none;
-				border-radius: 20px;
-				padding: 10px 20px;
-				margin: 10px 5px;
-				background-color: #3a3f4d; /* button color consistent with theme */
-				color: #e0e0e0; /* text color for buttons */
-				box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+				border-radius: 30px;
+				margin: 0 10px;
 				cursor: pointer;
-				outline: none;
-				font-size: 16px;
-				transition: background-color 0.3s ease, transform 0.2s ease;
-				transform: translateY(0);
-				justify-content: center;
-				flex-direction: column;
+				transition: background-color 0.3s, transform 0.3s;
+				font-weight: 500;
+				letter-spacing: 1px;
 			}
 
 			button:hover {
-				background-color: #4a4f5d; /* slightly lighter on hover */
+				background-color: #2980b9;
 			}
 
 			button:active {
-				background-color: #5a5f6d; /* even lighter on active */
-				transform: translateY(2px); /* subtle button press effect */
-				box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+				transform: scale(0.95);
 			}
 
-			/* Adding a header for the application name */
-			.signature-pad::before {
-				content: "Signature Chain";
-				font-weight: bold;
-				font-size: 24px;
-				display: block;
-				margin-bottom: 20px;
-				text-align: center;
-				border-bottom: 2px dashed #4a4f5d; /* dashed line to reflect the chain concept subtly */
-				padding-bottom: 10px;
+			footer {
+				margin-top: 25px;
+				color: #ffffff;
+				font-size: 14px;
+				font-weight: 500;
+				letter-spacing: 1px;
 			}
-			#top {
-				position: relative; /* Change from absolute to relative */
-				top: 5px;
-				left: 50%;
-				transform: translateX(-50%);
-				width: 500px;
-			}
-			.container {
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-			}
-			#logo {
-				width: 500px;
-			}
-			/* @ */
-			@media (max-width: 600px) {
-				.signature-pad {
-					width: 100%;
+			/* Responsive adjustments */
+			@media (max-width: 768px) {
+				#logo {
+					width: 250px;
+				}
+
+				.container {
 					padding: 10px;
 				}
-				#logo {
-					width: 300px;
+
+				.signature-pad {
+					padding: 20px;
+				}
+
+				#signatureCanvas {
+					width: 90%;
+					height: auto;
+				}
+
+				button {
+					padding: 10px 20px;
+					font-size: 14px;
+				}
+			}
+
+			@media (max-width: 480px) {
+				h3 {
+					font-size: 18px;
 				}
 			}
 		</style>
 	</head>
 	<body>
-		<div class="container" id="top">
+		<div class="container header" id="top">
 			<img
-				src="https://plugins.whatsonchain.com/api/plugin/main/30b2d116ea708cbc55310670f116fefa342650e1ff2619e1dba40017960ed3eb"
+				src="https://plugins.whatsonchain.com/api/plugin/main/e8aed71229c78fc2e080d291dd68ed2fc3174c03b334927b84aa263c612f3a98"
 				alt=""
 				id="logo"
 			/>
